@@ -1,11 +1,8 @@
 const router = require("express").Router();
 const { blogController } = require("../controllers");
 
-// serve country
-router.get("/getAllCountry", blogController.getAllCountry);
-router.get("/getCountryById", blogController.getCountryById);
-
 // blog
-router.get("/getAllBlog", blogController.getAllBlog);
+router.get("/getBlog", blogController.getBlog);
+router.get("/searchBlog", blogController.searchBlog);
 
 module.exports = router;

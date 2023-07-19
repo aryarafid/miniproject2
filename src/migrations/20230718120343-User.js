@@ -41,10 +41,6 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-      isActive: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
-      },
       createdAt: {
         type: DataTypes.DATETIME,
         defaultValue: Sequelize.NOW,

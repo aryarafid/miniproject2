@@ -1,37 +1,25 @@
 const axios = require("axios");
+const db = require("../models");
+const user = db.User;
+const sequelize = db.Sequelize;
+const { Op } = sequelize;
 
-const welcome = async (req, res) => {
-  try {
-    res.json("lil bitch");
-  } catch (error) {
-    res.status(404).send(error.message);
-  }
+const authController = {
+  register: async (req, res) => {
+    try {
+      const { username, email, phone, password } = req.body;
+      return res.send(req.body);
+
+
+
+      
+    } catch (error) {
+      return res.status(500).json({
+        message: "Register failed",
+        error: error.message,
+      });
+    }
+  },
 };
 
-// register -> /register
-// router.get("/register", register);
-
-//verify
-
-// login -> /login
-// router.get("/login", login);
-
-// keep login ->
-
-// forgot password ->
-
-// reset  password ->
-
-// change password ->
-
-// change username ->
-
-// change phone ->
-
-// change email ->
-
-module.exports = {
-  // getAllExpense,
-  // getExpenseById,
-  welcome,
-};
+module.exports = authController;
