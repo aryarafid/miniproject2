@@ -15,57 +15,27 @@ const authController = {
   register: async (req, res) => {
     try {
       const { username, email, phone, password } = req.body;
-      const isEmailExist = await user.findOne({
+      // cek user exist?
+      const existingUser = await user.findOne({
         where: {
-          email,
+          [Op.or]: [{ email }, { username }, { phone }],
         },
       });
-      const isUnameExist = await user.findOne({
-        where: {
-          username,
-        },
-      });
-      const isPhoneExist = await user.findOne({
-        where: {
-          phone,
-        },
-      });
-      // return res.send(isEmailExist);
-      if (isEmailExist) {
+      if (existingUser) {
         return res.status(500).json({
-          message: "Email Already Exists",
-        });
-      } else if (isUnameExist) {
-        return res.status(500).json({
-          message: "username Already Exists",
-        });
-      } else if (isPhoneExist) {
-        return res.status(500).json({
-          message: "Phone Already Exists",
+          message: "Email / username / phone already exists.",
         });
       }
-      // coolcool
-      // const existingUser = await user.findOne({
-      //   where: {
-      //     [Op.or]: [{ email }, { username }, { phone }],
-      //   },
-      // });
-      // // return res.send(existingUser);
-      // if (existingUser) {
-      //   return res.status(500).json({
-      //     message: "Email / username / phone already exists.",
-      //   });
-      // }
+      // hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(password, salt);
+      return res.json({hashPassword });
+      // return res.send(hashPassword);
 
       const data = await fs.readFile(
         path.resolve(__dirname, "../emails/registerEmail.html"),
         "utf-8"
       );
-      const tempCompile = await handlebars.compile(data);
-      log(token);
-      const tempResult = tempCompile({ token });
-
-      return res.send(tempResult);
     } catch (error) {
       return res.status(500).json({
         message: "Register failed",
