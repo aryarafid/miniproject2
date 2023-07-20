@@ -44,6 +44,7 @@ const authController = {
           message: "Phone Already Exists",
         });
       }
+      // coolcool
       // const existingUser = await user.findOne({
       //   where: {
       //     [Op.or]: [{ email }, { username }, { phone }],
