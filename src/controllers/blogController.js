@@ -1,6 +1,6 @@
 const axios = require("axios");
 const db = require("../models");
-const { Blog, Country } = db;
+const { Blog, Country, Category, User } = db;
 const sequelize = db.Sequelize;
 const { Op } = sequelize;
 
@@ -18,6 +18,11 @@ const blogController = {
         order: [
           ["createdAt", "DESC"],
           ["title", "ASC"],
+        ],
+        include: [
+          { model: Category },
+          { model: Country },
+          { model: User, attributes: ["id", "username", "email", "phone"] },
         ],
       });
       return res.status(200).json({
