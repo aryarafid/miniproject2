@@ -66,6 +66,9 @@ const blogController = {
   },
 
   // createblog
+  createBlog: async (req,res)=>{
+    
+  }
 };
 
 module.exports = blogController;
