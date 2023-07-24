@@ -1,4 +1,3 @@
-const axios = require("axios");
 const db = require("../models");
 const user = db.User;
 const sequelize = db.Sequelize;
@@ -8,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const transporter = require("../helpers/transporter");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
-const { log } = require("console");
 const { Op } = sequelize;
 const path = require("path");
 require("dotenv").config({

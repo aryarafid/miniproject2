@@ -1,5 +1,14 @@
-const { authController } = require("../controllers");
-const profileController = require("../controllers/profileController");
+const {
+  authController,
+  blogController,
+  profileController,
+  changeEmail,
+  changePassword,
+  changePhone,
+  changePhoto,
+  changeUsername,
+} = require("../controllers");
+
 const {
   authValidator,
   validateRegistration,
@@ -7,8 +16,6 @@ const {
   validateChangePassword,
   validateChangeUsername,
 } = require("../middleware/authValidator");
-// const { authValidator } = require("../middleware/authValidator");
-const { body } = require("express-validator");
 
 const router = require("express").Router();
 
@@ -19,44 +26,40 @@ router.post(
   authValidator.inputValidator,
   authController.register
 );
+// verify
 router.patch("/verify/:token", authController.verify);
+// login
 router.post(
   "/login",
   validatePassword,
   authValidator.inputValidator,
   authController.login
 );
+// change pw
 router.patch(
   "/change-password",
   validateChangePassword,
   authValidator.inputValidator,
   authValidator.verifyToken,
-  profileController.changePassword
+  changePassword
 );
-
+// change uname
 router.patch(
   "/change-username",
   validateChangeUsername,
   authValidator.inputValidator,
   authValidator.verifyToken,
-  profileController.changeUsername
+  changeUsername
 );
-
-//l
-router.patch(
-  "/change-email",
-  authValidator.verifyToken,
-  profileController.changeEmail
-);
-router.patch(
-  "/change-phone",
-  authValidator.verifyToken,
-  profileController.changePhone
-);
-router.post(
-  "/change-photo",
-  authValidator.verifyToken,
-  profileController.changePhoto
-);
+// change phone number
+router.patch("/change-phone", authValidator.verifyToken, changePhone);
+//change email
+router.patch("/change-email", authValidator.verifyToken, changeEmail);
+// change avatar
+// router.post(
+//   "/change-photo",
+//   authValidator.verifyToken,
+//   changePhoto.changePhoto
+// );
 
 module.exports = router;

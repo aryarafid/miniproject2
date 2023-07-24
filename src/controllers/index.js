@@ -1,7 +1,20 @@
-const blogController = require("./blogController");
 const authController = require("./authController");
+const blogController = require("./blogController");
+const profileController = require("./profileController");
+
+const { changeEmail } = require("./changeEmail");
+const { changePassword } = require("./changePassword");
+const { changePhone } = require("./changePhone");
+const { changePhoto } = require("./changePhoto");
+const { changeUsername } = require("./changeUsername");
 
 module.exports = {
-  blogController,
   authController,
+  blogController,
+  profileController,
+  changeEmail,
+  changePassword,
+  changePhone,
+  changePhoto,
+  changeUsername,
 };
