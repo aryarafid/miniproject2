@@ -5,10 +5,10 @@ const { authValidator } = require("../middleware/authValidator");
 const { body } = require("express-validator");
 
 // blog
-router.get("/getBlog", blogController.getBlog);
-router.get("/searchBlog", blogController.searchBlog);
+router.get("/get-all", blogController.getBlog);
+router.get("/search", blogController.searchBlog);
 router.post(
-  "/createBlog",
+  "/create",
   authValidator.verifyToken,
   blogController.createBlog
 );

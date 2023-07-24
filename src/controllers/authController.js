@@ -145,6 +145,12 @@ const authController = {
         });
       }
 
+      if (checkLogin.isVerified !== true) {
+        return res.status(404).json({
+          message: "please verify your account first",
+        });
+      }
+
       const isValid = await bcrypt.compare(password, checkLogin.password);
       if (!isValid) {
         return res.status(404).json({
