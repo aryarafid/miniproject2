@@ -44,9 +44,17 @@ const validateChangePassword = [
 const validateChangeUsername = [
   body("currentUsername").notEmpty().withMessage("Must not be empty"),
   body("newUsername").notEmpty().withMessage("Must not be empty"),
-  // .not()
-  // .equals(body("currentUsername"))
-  // .withMessage("Current Username and New Username must not match"),
+];
+
+const validateWriteBlog = [
+  body("title").trim().notEmpty().withMessage("Title is required."),
+  body("userId").isInt().withMessage("UserId must be an integer."),
+  body("imageURL").isURL().withMessage("Invalid imageURL format."),
+  body("categoryId").isInt().withMessage("CategoryId must be an integer."),
+  body("content").trim().notEmpty().withMessage("Content is required."),
+  body("videoURL").isURL().withMessage("Invalid videoURL format."),
+  body("keyword").trim().notEmpty().withMessage("Keyword is required."),
+  body("countryId").isInt().withMessage("CountryId must be an integer."),
 ];
 
 // functions
@@ -93,6 +101,7 @@ const authValidator = {
 module.exports = {
   // authValidator,
   // verifyToken,
+  validateWriteBlog,
   validateRegistration,
   validatePassword,
   validateChangePassword,

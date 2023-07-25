@@ -16,6 +16,7 @@ const {
   validateChangePassword,
   validateChangeUsername,
 } = require("../middleware/authValidator");
+const { multerUpload } = require("../middleware/multer");
 
 const router = require("express").Router();
 
@@ -56,10 +57,11 @@ router.patch("/change-phone", authValidator.verifyToken, changePhone);
 //change email
 router.patch("/change-email", authValidator.verifyToken, changeEmail);
 // change avatar
-// router.post(
-//   "/change-photo",
-//   authValidator.verifyToken,
-//   changePhoto.changePhoto
-// );
+router.post(
+  "/change-photo",
+  authValidator.verifyToken,
+  multerUpload.single('avatar'),
+  changePhoto
+);
 
 module.exports = router;

@@ -39,14 +39,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      isPublished: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
-      },
-      isDeleted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
+      // isPublished: {
+      //   type: DataTypes.BOOLEAN,
+      //   defaultValue: true,
+      // },
+      // isDeleted: {
+      //   type: DataTypes.BOOLEAN,
+      //   defaultValue: false,
+      // },
       //   created dan updatedAt sudah otomatis
     },
     {

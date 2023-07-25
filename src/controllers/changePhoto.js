@@ -2,39 +2,45 @@ const db = require("../models");
 const user = db.User;
 const bcrypt = require("bcrypt");
 const path = require("path");
+
+const fs = require("fs").promises;
 require("dotenv").config({
   path: path.resolve("../.env"),
 });
 
 const changePhoto = async (req, res) => {
   try {
-    const { currentPassword, newPassword, confirmPassword } = req.body;
-
-    const userFind = await user.findByPk(req.user.id); // Fetch password from the database based on user ID
-    if (!userFind) {
-      return res.status(404).json({ message: "User not found." });
-    }
-    const isValid = await bcrypt.compare(currentPassword, userFind.password); //compare old password input with the one in database
-    if (!isValid) {
-      return res.status(404).json({
-        message: "password is incorrect",
-      });
-    }
-
-    const salt = await bcrypt.genSalt(10); // begin processing the password change. now we hash the new password
-    const hashPassword = await bcrypt.hash(newPassword, salt);
-
+    const { id } = req.user;
     await db.sequelize.transaction(async (t) => {
-      userFind.password = hashPassword; // Set the new password
-      await userFind.save({ transaction: t }); // Save the user with the updated password
+      const oldData = await user.findOne({ where: { id } });
+      const result = await user.update(
+        {
+          img_url: req.file.path,
+        },
+        { where: { id } },
+        { transaction: t }
+      );
+      if (!result) {
+        return res.status(500).json({
+          message: "Change avatar failed",
+          error: err.message,
+        });
+      }
+      fs.unlink(oldData.img_url, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log("Old avatar deleted successfully");
+      });
       return res.status(200).json({
-        message: " Change password succeed",
-        // data: result,
+        message: "Change avatar Success",
+        image: req.file.path,
       });
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Failed",
+      message: "Change avatar failed",
       error: err.message,
     });
   }

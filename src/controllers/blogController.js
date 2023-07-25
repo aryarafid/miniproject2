@@ -11,10 +11,10 @@ const blogController = {
       const result = await Blog.findAndCountAll({
         limit: 10,
         offset: page == null || page == 1 ? 0 : 10 * (page - 1),
-        where: {
-          isPublished: { [Op.eq]: 1 },
-          isDeleted: { [Op.eq]: 0 },
-        },
+        // where: {
+        //   isPublished: { [Op.eq]: 1 },
+        //   isDeleted: { [Op.eq]: 0 },
+        // },
         order: [
           ["createdAt", "DESC"],
           ["title", "ASC"],
@@ -67,7 +67,7 @@ const blogController = {
 
   // createblog
   createBlog: async (req,res)=>{
-    
+  
   }
 };
 

@@ -47,14 +47,14 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      isPublished: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
-      },
-      isDeleted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
+      // isPublished: {
+      //   type: DataTypes.BOOLEAN,
+      //   defaultValue: true,
+      // },
+      // isDeleted: {
+      //   type: DataTypes.BOOLEAN,
+      //   defaultValue: false,
+      // },
       createdAt: {
         type: DataTypes.DATETIME,
         defaultValue: Sequelize.NOW,
