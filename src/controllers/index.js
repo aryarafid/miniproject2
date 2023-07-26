@@ -7,6 +7,7 @@ const { changePassword } = require("./changePassword");
 const { changePhone } = require("./changePhone");
 const { changePhoto } = require("./changePhoto");
 const { changeUsername } = require("./changeUsername");
+const { forgotPassword, resetPassword } = require("./forgotAndResetPassword");
 
 module.exports = {
   authController,
@@ -17,4 +18,6 @@ module.exports = {
   changePhone,
   changePhoto,
   changeUsername,
+  forgotPassword,
+  resetPassword,
 };

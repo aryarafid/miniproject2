@@ -7,6 +7,8 @@ const {
   changePhone,
   changePhoto,
   changeUsername,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers");
 
 const {
@@ -15,6 +17,7 @@ const {
   validatePassword,
   validateChangePassword,
   validateChangeUsername,
+  validateForgotPassword,
 } = require("../middleware/authValidator");
 const { multerUpload } = require("../middleware/multer");
 
@@ -60,8 +63,24 @@ router.patch("/change-email", authValidator.verifyToken, changeEmail);
 router.post(
   "/change-photo",
   authValidator.verifyToken,
-  multerUpload.single('avatar'),
+  multerUpload.single("avatar"),
   changePhoto
+);
+// forgot password
+router.post(
+  "/forgot-password",
+  validateForgotPassword,
+  authValidator.inputValidator,
+  authValidator.verifyToken,
+  forgotPassword
+);
+// reset password
+router.post(
+  "/reset-password",
+  validateChangePassword,
+  authValidator.inputValidator,
+  authValidator.verifyToken,
+  resetPassword
 );
 
 module.exports = router;

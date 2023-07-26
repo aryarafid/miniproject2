@@ -57,6 +57,10 @@ const validateWriteBlog = [
   body("countryId").isInt().withMessage("CountryId must be an integer."),
 ];
 
+const validateForgotPassword = [
+  body("email").isEmail().withMessage("Please provide a valid email address."),
+];
+
 // functions
 const authValidator = {
   inputValidator: (req, res, next) => {
@@ -106,5 +110,6 @@ module.exports = {
   validatePassword,
   validateChangePassword,
   validateChangeUsername,
+  validateForgotPassword,
   authValidator,
 };
