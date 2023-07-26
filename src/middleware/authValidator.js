@@ -48,11 +48,15 @@ const validateChangeUsername = [
 
 const validateWriteBlog = [
   body("title").trim().notEmpty().withMessage("Title is required."),
-  body("userId").isInt().withMessage("UserId must be an integer."),
   body("imageURL").isURL().withMessage("Invalid imageURL format."),
   body("categoryId").isInt().withMessage("CategoryId must be an integer."),
   body("content").trim().notEmpty().withMessage("Content is required."),
-  body("videoURL").isURL().withMessage("Invalid videoURL format."),
+  body("videoURL")
+    .isURL()
+    .withMessage("Invalid videoURL format.")
+    .isLength({ max: 500 })
+    .withMessage("Content should not exceed 500 characters."),
+  ,
   body("keyword").trim().notEmpty().withMessage("Keyword is required."),
   body("countryId").isInt().withMessage("CountryId must be an integer."),
 ];

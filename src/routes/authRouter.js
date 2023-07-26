@@ -18,6 +18,7 @@ const {
   validateChangePassword,
   validateChangeUsername,
   validateForgotPassword,
+  validateWriteBlog,
 } = require("../middleware/authValidator");
 const { multerUpload } = require("../middleware/multer");
 
@@ -67,19 +68,17 @@ router.post(
   changePhoto
 );
 // forgot password
-router.post(
+router.put(
   "/forgot-password",
   validateForgotPassword,
   authValidator.inputValidator,
-  authValidator.verifyToken,
   forgotPassword
 );
 // reset password
-router.post(
-  "/reset-password",
+router.patch(
+  "/reset-password/:token",
   validateChangePassword,
   authValidator.inputValidator,
-  authValidator.verifyToken,
   resetPassword
 );
 

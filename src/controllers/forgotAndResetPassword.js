@@ -1,6 +1,13 @@
 const db = require("../models");
 const user = db.User;
+const sequelize = db.Sequelize;
+const fs = require("fs").promises;
+const handlebars = require("handlebars");
+const jwt = require("jsonwebtoken");
+const transporter = require("../helpers/transporter");
+const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+const { Op } = sequelize;
 const path = require("path");
 require("dotenv").config({
   path: path.resolve("../.env"),
@@ -10,7 +17,11 @@ const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const userFind = await user.findByPk(req.user.id); // Fetch acc data from the database based on user ID
+    const userFind = await user.findOne({
+      where: { email: email },
+      // Only retrieve the 'id' attribute
+    });
+    //from the database based on user ID
     if (!userFind) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -19,10 +30,44 @@ const forgotPassword = async (req, res) => {
         .status(404)
         .json({ message: "Email does not exist in the database." });
     }
-    //send email
+    //create token and send it to email. token is filled with id and email. token is used for resetting the pw
+    let payload = { id: userFind.id, email: userFind.email };
+    // return res.json(payload);
+    const token = jwt.sign(payload, process.env.JWT_KEY, {
+      expiresIn: 600000,
+    });
+
+    const redirect = `http://localhost:3000/api/auth/reset-password/${token}`;
+
+    const templatePath = path.resolve(
+      __dirname,
+      "../emails/resetPassword.html"
+    );
+    const templateContent = await fs.readFile(templatePath, "utf-8");
+    const template = handlebars.compile(templateContent);
+    const rendered = template({ redirect });
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    // Pengiriman email
+    await transporter.sendMail({
+      from: process.env.NODEMAILER_USER,
+      to: userFind.email,
+      subject: "Forgot Password",
+      html: rendered,
+    });
 
     return res.status(200).json({
-      message: " Change password succeed",
+      message: "Email sent",
       // data: result,
     });
   } catch (err) {
@@ -35,34 +80,41 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { currentPassword, newPassword, confirmPassword } = req.body;
-
-    const userFind = await user.findByPk(req.user.id); // Fetch password from the database based on user ID
-    if (!userFind) {
-      return res.status(404).json({ message: "User not found." });
+    const token = req.params.token;
+    const { newPassword, confirmPassword } = req.body;
+    const verifier = process.env.JWT_KEY;
+    const decode = jwt.verify(token, verifier);
+    // return res.json(decode);
+    if (!decode) {
+      return res.status(404).send("token invalid");
     }
-    const isValid = await bcrypt.compare(currentPassword, userFind.password); //compare old password input with the one in database
-    if (!isValid) {
-      return res.status(404).json({
-        message: "password is incorrect",
-      });
+    if (newPassword !== confirmPassword) {
+      return res
+        .status(404)
+        .send("new password and confirm password input have to be the same");
     }
-
-    const salt = await bcrypt.genSalt(10); // begin processing the password change. now we hash the new password
-    const hashPassword = await bcrypt.hash(newPassword, salt);
-
+    // hash pw
+    const salt = await bcrypt.genSalt(10);
+    const password1 = await bcrypt.hash(newPassword, salt);
+    // return res.json(password1);
     await db.sequelize.transaction(async (t) => {
-      userFind.password = hashPassword; // Set the new password
-      await userFind.save({ transaction: t }); // Save the user with the updated password
+      await user.update(
+        { password: password1 },
+        {
+          where: {
+            id: decode.id,
+          },
+        },
+        { transaction: t }
+      );
+
       return res.status(200).json({
-        message: " Change password succeed",
-        // data: result,
+        message: "reset password succeed",
       });
     });
-  } catch (err) {
+  } catch (error) {
     return res.status(500).json({
-      message: "Failed",
-      error: err.message,
+      message: "reset password failed",
     });
   }
 };

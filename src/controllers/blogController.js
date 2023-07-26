@@ -1,5 +1,7 @@
 const axios = require("axios");
 const db = require("../models");
+const blog = db.Blog;
+const user = db.User;
 const { Blog, Country, Category, User } = db;
 const sequelize = db.Sequelize;
 const { Op } = sequelize;
@@ -66,9 +68,50 @@ const blogController = {
   },
 
   // createblog
-  createBlog: async (req,res)=>{
-  
-  }
+  createBlog: async (req, res) => {
+    try {
+      const {
+        title,
+        imageURL,
+        categoryId,
+        content,
+        videoURL,
+        keyword,
+        countryId,
+      } = req.query;
+
+      // const userFind = await user.findByPk(req.user.id);
+
+      // user ID get from token
+      // Use a transaction to ensure atomicity
+      await db.sequelize.transaction(async (t) => {
+        // Create the blog post within the transaction
+        const blogCreate = await blog.create(
+          {
+            title,
+            userId: req.user.id,
+            imageURL,
+            categoryId,
+            content,
+            videoURL,
+            keyword,
+            countryId,
+          },
+          { transaction: t }
+        );
+
+        return res.status(200).json({
+          message: " Change phone number succeed",
+          blogCreate,
+        });
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Create blog failed. Try again",
+        error: error.message,
+      });
+    }
+  },
 };
 
 module.exports = blogController;
