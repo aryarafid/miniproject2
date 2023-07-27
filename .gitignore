@@ -1,5 +1,5 @@
 /.env
-/.env-template
+env-template
 /blog.sql
 /blog2.sql
 /blog3.sql
