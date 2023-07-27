@@ -2,11 +2,45 @@ const axios = require("axios");
 const db = require("../models");
 const blog = db.Blog;
 const user = db.User;
+const category = db.Category;
+const country = db.Country;
+const path = require("path");
+const fs = require("fs").promises;
 const { Blog, Country, Category, User } = db;
 const sequelize = db.Sequelize;
 const { Op } = sequelize;
 
 const blogController = {
+  getCountry: async (req, res) => {
+    try {
+      const result = await Country.findAll();
+      return res.status(200).json({
+        message: "Get data success",
+        data: result,
+      });
+    } catch (error) {
+      return res.status(404).json({
+        message: "Get data failed",
+        error: error.message,
+      });
+    }
+  },
+
+  getCategory: async (req, res) => {
+    try {
+      const result = await Category.findAll();
+      return res.status(200).json({
+        message: "Get data success",
+        data: result,
+      });
+    } catch (error) {
+      return res.status(404).json({
+        message: "Get data failed",
+        error: error.message,
+      });
+    }
+  },
+
   getBlog: async (req, res) => {
     try {
       const { page } = req.query;
@@ -33,7 +67,7 @@ const blogController = {
         data: result,
       });
     } catch (error) {
-      return res.status(500).json({
+      return res.status(404).json({
         message: "Get data failed",
         error: error.message,
       });
@@ -60,7 +94,7 @@ const blogController = {
         data: result,
       });
     } catch (error) {
-      return res.status(500).json({
+      return res.status(404).json({
         message: "Get data failed",
         error: error.message,
       });
@@ -78,9 +112,7 @@ const blogController = {
         videoURL,
         keyword,
         countryId,
-      } = req.query;
-
-      // const userFind = await user.findByPk(req.user.id);
+      } = req.body;
 
       // user ID get from token
       // Use a transaction to ensure atomicity
@@ -90,7 +122,7 @@ const blogController = {
           {
             title,
             userId: req.user.id,
-            imageURL,
+            imageURL: req.file.path,
             categoryId,
             content,
             videoURL,
@@ -99,6 +131,8 @@ const blogController = {
           },
           { transaction: t }
         );
+
+        return res.json(blogCreate);
 
         return res.status(200).json({
           message: " Change phone number succeed",

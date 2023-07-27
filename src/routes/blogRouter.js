@@ -4,6 +4,12 @@ const {
   authValidator,
   validateWriteBlog,
 } = require("../middleware/authValidator");
+const { multerUpload } = require("../middleware/multer");
+
+// get all country
+router.get("/get-country", blogController.getCountry);
+// get all country
+router.get("/get-category", blogController.getCategory);
 
 // get all blog
 router.get("/get-all", blogController.getBlog);
@@ -12,9 +18,10 @@ router.get("/search", blogController.searchBlog);
 // create blog
 router.post(
   "/create",
-  validateWriteBlog,
-  authValidator.inputValidator,
+  // validateWriteBlog, --> error
+  // authValidator.inputValidator,
   authValidator.verifyToken,
+  multerUpload.single("imageURL"),
   blogController.createBlog
 );
 
