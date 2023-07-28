@@ -2,6 +2,8 @@
 
 Backend API for a blogging app. Made with Express.js.
 
+The documentation: https://documenter.getpostman.com/view/22929544/2s946pZ8wi
+
 How to run:
 1. Clone to your device
 2. Go to its directory
